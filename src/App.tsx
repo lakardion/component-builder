@@ -1,62 +1,53 @@
-import { ChangeEvent, ChangeEventHandler, FC, useState } from 'react'
-import reactLogo from './assets/react.svg'
+import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from "react";
+import { MyComponents, MyComponentsType } from "./components/component-types";
+import { IndeterminateCheckbox } from "./components/indeterminate-checkbox";
+import { Switch, SwitchFree } from "./components/switches";
+import { Table } from "./components/table";
 
-const Switch: FC<{ onChange?: (value: boolean) => void }> = ({ onChange }) => {
-  const [value, setValue] = useState(false)
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value === 'true'
-    setValue(newValue)
-    onChange?.(newValue)
-  }
-  const toggleChange = () => {
-    setValue(prevValue => !prevValue)
-  }
-
-  const translateClass = value ? `translate-x-full` : ''
-  const bgSwitch = value ? `bg-green-500` : ''
-  return <section className="w-1/2 aspect-video">
-    <input hidden type="checkbox" checked={value} value={value.toString()} onChange={handleChange} />
-    <div className={`w-full h-full bg-gray-400 rounded-l-full rounded-r-full relative hover:cursor-pointer ${bgSwitch}`} onClick={toggleChange}>
-      <div className={`absolute bg-gray-100 rounded-full w-[20vw] h-[20vw] transition-transform ease-linear duration-200  transform hover:scale-105 hover:bg-teal-100 -translate-y-1/2 left-[5vw] top-1/2 ${translateClass}`}>
-
-      </div>
-    </div>
-  </section>
-}
-
-
-const SwitchFree: FC<{ onChange?: (value: boolean) => void, size: number }> = ({ onChange, size }) => {
-  const [value, setValue] = useState(false)
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value === 'true'
-    setValue(newValue)
-    onChange?.(newValue)
-  }
-  const toggleChange = () => {
-    setValue(prevValue => !prevValue)
-  }
-
-  const translateClass = value ? `translate-x-full` : ''
-  const bgSwitch = value ? `bg-green-500` : ''
-  const ratio = 1.2
-  return <section style={{ width: `${size * 2}px` }} className={`aspect-video`}>
-    <input hidden type="checkbox" checked={value} value={value.toString()} onChange={handleChange} />
-    <div className={`w-full h-full bg-gray-400 rounded-l-full rounded-r-full relative hover:cursor-pointer ${bgSwitch}`} onClick={toggleChange}>
-      <div style={{ left: `${size / (ratio * 5)}px`, width: `${size / ratio}px`, height: `${size / ratio}px` }} className={`absolute bg-gray-100 rounded-full transition-transform ease-linear duration-200  transform hover:scale-105 hover:bg-teal-100 -translate-y-1/2 top-1/2 ${translateClass}`}>
-
-      </div>
-    </div>
-  </section>
-}
-
+const components: { key: MyComponents; component: React.FC<any> }[] = [
+  {
+    key: MyComponents.SWITCH,
+    component: Switch,
+  },
+  {
+    key: MyComponents.SWITCH_FREE,
+    component: SwitchFree,
+  },
+  {
+    key: MyComponents.INDETERMINATE_CHECKBOX,
+    component: IndeterminateCheckbox,
+  },
+  { key: MyComponents.TABLE, component: Table },
+];
 function App() {
-  const [count, setCount] = useState(0)
+  const [selected, setSelected] = useState<MyComponents>(MyComponents.SWITCH);
+
+  const handleSelectedChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelected(e.target.value as MyComponents);
+  };
+
+  const SelectedComponent = useMemo(() => {
+    const found = components.find((c) => c.key === selected)?.component;
+    return found ?? (() => <></>);
+  }, [selected]);
 
   return (
-    <div className="flex justify-center items-center h-screen w-screen">
-      <SwitchFree size={100} />
-    </div>
-  )
+    <>
+      <section className="absolute right-1/2 translate-x-1/2">
+        <label>Select a component</label>
+        <div>
+          <select value={selected} onChange={handleSelectedChange}>
+            {Object.entries(MyComponents).map(([k, v]) => {
+              return <option value={v}>{v}</option>;
+            })}
+          </select>
+        </div>
+      </section>
+      <div className="flex flex-col gap-5 justify-center items-center h-screen w-screen">
+        <SelectedComponent />
+      </div>
+    </>
+  );
 }
 
-export default App
+export default App;
