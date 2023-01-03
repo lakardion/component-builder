@@ -1,5 +1,6 @@
 import { ChangeEvent, ReactNode, useEffect, useMemo, useState } from "react";
 import { MyComponents, MyComponentsType } from "./components/component-types";
+import { ComposedSwitch } from "./components/composed-switch";
 import { IndeterminateCheckbox } from "./components/indeterminate-checkbox";
 import { Switch, SwitchFree } from "./components/switches";
 import { Table } from "./components/table";
@@ -18,6 +19,10 @@ const components: { key: MyComponents; component: React.FC<any> }[] = [
     component: IndeterminateCheckbox,
   },
   { key: MyComponents.TABLE, component: Table },
+  {
+    key: MyComponents.COMPOSED_SWITCH,
+    component: ComposedSwitch,
+  },
 ];
 function App() {
   const [selected, setSelected] = useState<MyComponents>(MyComponents.SWITCH);
@@ -38,7 +43,11 @@ function App() {
         <div>
           <select value={selected} onChange={handleSelectedChange}>
             {Object.entries(MyComponents).map(([k, v]) => {
-              return <option value={v}>{v}</option>;
+              return (
+                <option value={v} key={v}>
+                  {v}
+                </option>
+              );
             })}
           </select>
         </div>

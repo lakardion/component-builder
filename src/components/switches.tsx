@@ -1,4 +1,4 @@
-import { ChangeEvent, ChangeEventHandler, FC, useState } from "react";
+import { ChangeEvent, FC, useState } from "react";
 
 export const Switch: FC<{ onChange?: (value: boolean) => void }> = ({
   onChange,
@@ -35,22 +35,30 @@ export const Switch: FC<{ onChange?: (value: boolean) => void }> = ({
     </section>
   );
 };
+
+import { MouseEvent } from "react";
+
 export const SwitchFree: FC<{
-  onChange?: (value: boolean) => void;
+  value?: boolean;
   size: number;
-}> = ({ onChange, size }) => {
-  const [value, setValue] = useState(false);
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value === "true";
-    setValue(newValue);
-    onChange?.(newValue);
+  toggle?: (e: MouseEvent<HTMLDivElement>) => void;
+}> = ({ size, value: controlledValue, toggle }) => {
+  const [uncontrolledValue, setUncontrolledValue] = useState(false);
+
+  const isControlled = controlledValue !== undefined;
+  const value =
+    controlledValue !== undefined ? controlledValue : uncontrolledValue;
+  const uncontrolledToggleChange = (e: MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setUncontrolledValue((prevValue) => {
+      return !prevValue;
+    });
   };
-  const toggleChange = () => {
-    setValue((prevValue) => !prevValue);
-  };
+  const handleToggle =
+    isControlled && toggle ? toggle : uncontrolledToggleChange;
 
   const translateClass = value ? `translate-x-full` : "";
-  const bgSwitch = value ? `bg-green-500` : "";
+  const bgSwitch = value ? `bg-green-500` : "bg-gray-400";
   const ratio = 1.2;
   return (
     <section style={{ width: `${size * 2}px` }} className={`aspect-video`}>
@@ -59,11 +67,11 @@ export const SwitchFree: FC<{
         type="checkbox"
         checked={value}
         value={value.toString()}
-        onChange={handleChange}
+        readOnly
       />
       <div
-        className={`w-full h-full bg-gray-400 rounded-l-full rounded-r-full relative hover:cursor-pointer ${bgSwitch}`}
-        onClick={toggleChange}
+        className={`w-full h-full rounded-l-full rounded-r-full relative hover:cursor-pointer ${bgSwitch}`}
+        onClick={handleToggle}
       >
         <div
           style={{
