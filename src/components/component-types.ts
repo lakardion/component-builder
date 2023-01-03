@@ -4,5 +4,6 @@ export enum MyComponents {
   SWITCH_FREE = "SwitchFree",
   TABLE = "Table",
   COMPOSED_SWITCH = "ComposedSwitch",
+  PROGRESS_BAR = "ProgressBar",
 }
 export type MyComponentsType = `${MyComponents}`;
