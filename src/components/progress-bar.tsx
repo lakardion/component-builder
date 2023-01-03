@@ -7,26 +7,7 @@ import {
   useState,
 } from "react";
 import { secondsToDuration } from "../utils/date";
-
-const useWatchWidth = (ref: MutableRefObject<HTMLDivElement | null>) => {
-  const [width, setWidth] = useState<number>();
-  useEffect(() => {
-    if (!width && ref.current) {
-      setWidth(ref.current.clientWidth);
-    }
-    const domListener: ResizeObserverCallback = (e) => {
-      const [first] = e;
-      setWidth(first.target.clientWidth);
-    };
-    const obs = new ResizeObserver(domListener);
-    ref.current && obs.observe(ref.current);
-    return () => {
-      obs.disconnect();
-    };
-  }, [width]);
-
-  return width;
-};
+import { useWatchWidth } from "../utils/dom";
 
 export const ProgressBar: FC<{
   totalSeconds: number;

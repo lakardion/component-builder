@@ -3,6 +3,7 @@ import { MyComponents, MyComponentsType } from "./components/component-types";
 import { ComposedSwitch } from "./components/composed-switch";
 import { IndeterminateCheckbox } from "./components/indeterminate-checkbox";
 import { ProgressBarShow } from "./components/show/progress-bar";
+import { VolumeControlShow } from "./components/show/volume-control";
 import { Switch, SwitchFree } from "./components/switches";
 import { Table } from "./components/table";
 
@@ -27,6 +28,10 @@ const components: { key: MyComponents; component: React.FC<any> }[] = [
   {
     key: MyComponents.PROGRESS_BAR,
     component: ProgressBarShow,
+  },
+  {
+    key: MyComponents.VOLUME_CONTROL,
+    component: VolumeControlShow,
   },
 ];
 function App() {
