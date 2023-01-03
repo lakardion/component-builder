@@ -37,7 +37,6 @@ export const ProgressBar: FC<{
 
   // const [isDraggingProgress, setIsDraggingProgress] = useState(false);
   const isDraggingProgressRef = useRef(false);
-  const [forceMovedX, setForceMovedX] = useState<number>();
   const [
     /**
      * Intermediary seconds to instantly show seconds on progress bar, but only commit them once the use stops dragging
@@ -64,8 +63,6 @@ export const ProgressBar: FC<{
       const diff = e.clientX - minLeft;
       const exceeds = e.clientX > maxRight;
       const forceMoved = diff <= 0 ? 0 : exceeds ? maxRightWidth : diff;
-      const forceMovedWithOffset = forceMoved - 7;
-      setForceMovedX(forceMovedWithOffset);
       const newValue = (forceMoved / maxRightWidth) * totalSeconds;
 
       setInstantSeconds(newValue);
@@ -110,13 +107,12 @@ export const ProgressBar: FC<{
           onClick={handleBarClick}
         ></div>
         <div
-          className="absolute top-1/2 -translate-y-1/2 h-1.5 rounded-lg bg-black/30 dark:bg-white"
+          className="absolute top-1/2 -translate-y-1/2 h-1.5 rounded-lg bg-black/30 dark:bg-white cursor-pointer"
+          onClick={handleBarClick}
           style={{
             width:
-              forceMovedX !== undefined
-                ? forceMovedX + 7
-                : currentProgressBarWidth && totalSeconds
-                ? (currentProgressBarWidth * currentSeconds) / totalSeconds + 7
+              currentProgressBarWidth && totalSeconds
+                ? (currentProgressBarWidth * instantSeconds) / totalSeconds + 7
                 : 0,
           }}
         ></div>
@@ -126,10 +122,8 @@ export const ProgressBar: FC<{
           ref={currentProgressDotRef}
           style={{
             transform: `translateX(${
-              forceMovedX !== undefined
-                ? forceMovedX
-                : currentProgressBarWidth && totalSeconds
-                ? (currentProgressBarWidth * currentSeconds) / totalSeconds
+              currentProgressBarWidth && totalSeconds
+                ? (currentProgressBarWidth * instantSeconds) / totalSeconds - 7
                 : 0
             }px)`,
           }}
